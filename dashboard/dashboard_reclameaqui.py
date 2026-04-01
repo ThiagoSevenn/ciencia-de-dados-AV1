@@ -387,12 +387,21 @@ st.subheader("4 · Proporção por tipo de status")
 
 if "STATUS" in df.columns and "CASOS" in df.columns:
     status_cnt = df.groupby("STATUS")["CASOS"].sum().reset_index()
+
+    # Criar mapa de cores fixo
+    cores = px.colors.qualitative.Set2
+    status_unicos = status_cnt["STATUS"].unique()
+    color_map = {status: cores[i % len(cores)] for i, status in enumerate(status_unicos)}
+
     col_a, col_b = st.columns(2)
 
     with col_a:
         fig_pie = px.pie(
-            status_cnt, names="STATUS", values="CASOS",
-            color_discrete_sequence=px.colors.qualitative.Set2,
+            status_cnt,
+            names="STATUS",
+            values="CASOS",
+            color="STATUS",
+            color_discrete_map=color_map,  # 👈 chave aqui
         )
         fig_pie.update_traces(textposition="inside", textinfo="percent+label")
         fig_pie.update_layout(height=340, showlegend=False, margin=dict(t=20, b=20))
@@ -401,21 +410,24 @@ if "STATUS" in df.columns and "CASOS" in df.columns:
     with col_b:
         fig_bar_status = px.bar(
             status_cnt.sort_values("CASOS", ascending=True),
-            x="CASOS", y="STATUS", orientation="h",
+            x="CASOS",
+            y="STATUS",
+            orientation="h",
             color="STATUS",
-            color_discrete_sequence=px.colors.qualitative.Set2,
+            color_discrete_map=color_map,  # 👈 mesma paleta
             text_auto=True,
         )
         fig_bar_status.update_layout(
-            height=340, showlegend=False,
-            xaxis_title="Total de reclamações", yaxis_title="",
+            height=340,
+            showlegend=False,
+            xaxis_title="Total de reclamações",
+            yaxis_title="",
             template="plotly_white",
             margin=dict(t=20, b=10),
         )
         st.plotly_chart(fig_bar_status, use_container_width=True)
 else:
     st.warning("Colunas STATUS ou CASOS não disponíveis.")
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # COMPONENTE 5 — Análise Estatística de Textos
