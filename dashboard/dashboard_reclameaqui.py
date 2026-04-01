@@ -2,7 +2,7 @@
 # DASHBOARD — RECLAMEAQUI  |  Streamlit
 # =============================================================================
 # Como executar localmente:
-#   pip install -r library/requirements.txt
+#   pip install -r dashboard/requirements.txt
 #   streamlit run dashboard/dashboard_reclameaqui.py
 # =============================================================================
 
